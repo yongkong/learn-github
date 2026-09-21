@@ -1,0 +1,36 @@
+---
+title: 术语表
+description: 全站统一词表 · 遇到生词回这里查
+---
+
+按字母 / 拼音无严格顺序，均为 **GitHub 平台术语**（不含 git 命令）。
+
+| 术语 | 英文 | 一句话解释 |
+| --- | --- | --- |
+| 分支保护 | Branch protection | 对分支强制的规则（禁直推、需 review、需 CI 绿） |
+| 检入 / 检出 | Checkout (`actions/checkout`) | 在 runner 上把仓库代码克隆下来的 action 步骤 |
+| 交叉引用 | Cross-reference | 评论里 `#12` 产生的 Issue/PR 互链，不触发关闭 |
+| 部署保护规则 | Deployment protection rules | 上线前需人工审批 / 限环境的门禁 |
+| Fork | Fork | 把别人的仓库完整复制到自己账户下以进行贡献 |
+| 关闭关键字 | Closing keywords | `closes/fixes/resolves #N`，合并即自动关 Issue |
+| Issue | Issue | 挂在仓库上的话题卡片：任务 / bug / 讨论 |
+| 标签 | Label | 给 Issue/PR 贴的分类纸条，可多贴、可筛选 |
+| 里程碑 | Milestone | 带截止日期的 Issue/PR 集合，代表一个版本 |
+| 合并冲突 | Merge conflict | 同一处被双方改成不同内容，需人工裁决 |
+| 拉取请求 | Pull Request (PR) | 请求把某分支的改动合并进目标分支，含 review |
+| 代码审查 | Code review | 在 PR 上逐行评论、建议、批准或请求修改 |
+| 必需状态检查 | Required checks | PR 必须通过的 CI，否则不能合并 |
+| 运行器 | Runner | 执行 job 的机器（GitHub 托管或自托管） |
+| 秘密 | Secrets | 加密存储的密钥，用 `${{ secrets.X }}` 引用 |
+| 暂存 PR | Draft PR | 标记为草稿、尚不可被合并的 PR |
+| 上游 | Upstream | fork 场景里的原始源仓库 |
+| 工作流 | Workflow | 一条 `.github/workflows/*.yml` 定义的自动化流水线 |
+| 作业 | Job | workflow 里一组在单台 runner 上串行的步骤；job 间默认并行 |
+| 步骤 | Step | job 内单个动作，`uses:`（引用 action）或 `run:`（命令） |
+| 触发事件 | Event / trigger | 何时运行 workflow（push / pull_request / schedule 等） |
+
+## 出处
+
+📖 [GitHub Glossary（官方术语表）](https://docs.github.com/zh/get-started/learning-about-github/github-glossary)
+
+<LessonComplete id="glossary" />

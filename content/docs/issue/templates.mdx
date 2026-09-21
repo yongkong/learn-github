@@ -1,0 +1,107 @@
+---
+title: Issue 模板
+description: 让别人（和未来你自己）按你要的格式提 Issue
+---
+
+## 为什么需要模板
+
+裸 Issue 的质量全看提事的人心情。**模板（Issue template）**= 预设好的表单，强制填「复现步骤 / 期望 / 实际 / 环境」这类字段。对个人，它保证你自己三个月后还记得当初现象；对团队，它是减少来回追问的第一道闸。
+
+## 放在哪里
+
+模板文件放进仓库任一 `docs/`、`.github/` 或根目录下的 `ISSUE_TEMPLATE/` 文件夹：
+
+```text
+.github/
+  ISSUE_TEMPLATE/
+    config.yml
+    bug_report.yml
+    feature_request.yml
+```
+
+有模板后，点 **New issue** 会出现「选模板」的入口页。
+
+## Markdown 模板（最快上手）
+
+`bug_report.md`：
+
+```markdown
+---
+name: Bug 报告
+about: 报告一个问题
+title: "[bug] "
+labels: bug
+---
+
+## 发生了什么
+<!-- 一句话描述 -->
+
+## 复现步骤
+1.
+2.
+
+## 期望结果
+
+## 实际结果
+
+## 环境
+- OS:
+- 浏览器 / Node 版本:
+```
+
+## 表单模板（结构化，推荐）
+
+`.yml` 模板会渲染成分步填空表单，字段有 `id`/`type`/`attributes`/`validations`：
+
+```yaml
+name: Bug 报告
+description: 报告一个问题
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 发生了什么？
+      description: 也请贴相关日志或截图
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 严重度
+      options: [阻塞, 一般, 轻微]
+    validations:
+      required: true
+```
+
+`config.yml` 控制哪些字段/模板可用，并开启 `blank_issues_enabled: false` 禁止空白 Issue。
+
+<Callout type="warn">
+`.github/ISSUE_TEMPLATE/` 里的模板**不会**出现在文件浏览的普通列表里，只在创建 Issue 时生效；别和仓库根目录的 `ISSUE_TEMPLATE/` 混放。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="issue-template-q1"
+  question="要让新 Issue 必须走模板、不允许空白 Issue，在 config.yml 里设？"
+  options={[
+    { label: "blank_issues_enabled: false", correct: true },
+    { label: "disable_empty_issues: yes" },
+    { label: "require_template: true" },
+  ]}
+  explain="官方字段就是 blank_issues_enabled，设为 false 即禁止空白 Issue。"
+/>
+
+## 动手清单
+
+1. 在仓库建 `.github/ISSUE_TEMPLATE/bug_report.md`，粘贴上面 Markdown 模板并 commit。
+2. 点 **New issue** → 应看到「Bug 报告」模板入口 → 用它提一个 Issue。
+3. 试试再加一个 `feature_request.md`（`labels: enhancement`），对比两个模板差异。
+
+## 主要出处
+
+📖 [GitHub Docs · 为仓库配置 Issue 和 PR 模板](https://docs.github.com/zh/communities/using-templates-to-encourage-useful-issues-and-pull-requests)
+
+<LessonComplete id="issue-templates" />

@@ -1,0 +1,75 @@
+---
+title: 搜索与过滤
+description: 用一套查询语法秒定位你要的那个 Issue
+---
+
+## 为什么值得学
+
+Issue 一多就找不到。**GitHub 的 issue 搜索是一套真正的查询语言**（不是普通关键词搜索），掌握它，你能一句话问出「我名下、v1.0 里、还没做的高优先级 bug」。
+
+## 核心查询词
+
+| 查询 | 含义 |
+| --- | --- |
+| `is:issue` / `is:pr` | 只看 Issue 或只看 PR |
+| `is:open` / `is:closed` | 状态过滤 |
+| `label:bug` | 带某标签（多标签写多个 `label:`） |
+| `-label:wontfixed` | 前缀 `-` 表示排除 |
+| `assignee:@me` | 指派给我（也可写具体用户名） |
+| `author:yongkong` | 由某人创建 |
+| `milestone:"v1.0"` | 属于某里程碑 |
+| `no:milestone` | 未归入任何里程碑 |
+| `created:>2026-01-01` | 按创建时间 |
+| `in:title 登录` | 只在标题里搜关键词 |
+
+**空格 = AND**；多个 `label:` 默认是「同时满足」。
+
+组合示例：
+
+```text
+is:open is:issue label:bug assignee:@me no:milestone
+```
+
+读作：*我还未关闭、未排进版本、且属于我的 bug。*
+
+## 排序与保存
+
+- 右上 **Sort** 可按 创建时间 / 更新时间 / 评论数 排。
+- 搜索框结果满意后，点 **Save** 起个名，下次一键调用（团队常用这招做「待我 review 的 PR」快捷视图）。
+
+## 自测
+
+<Quiz
+  id="issue-search-q1"
+  question="查询里 `label:bug -label:urgent` 的意思是？"
+  options={[
+    { label: "含 bug 但不含 urgent", correct: true },
+    { label: "含 bug 且含 urgent" },
+    { label: "不含 bug 但含 urgent" },
+  ]}
+  explain="前缀 `-` 表示排除该条件，所以是「有 bug 标签、但没有 urgent 标签」。"
+/>
+
+<Quiz
+  id="issue-search-q2"
+  question="`assignee:@me` 中的 `@me` 代表？"
+  options={[
+    { label: "当前登录的账户", correct: true },
+    { label: "仓库所有者账户" },
+    { label: "组织管理员账户" },
+  ]}
+  explain="@me 是动态占位符，自动等于此刻登录的你，别人用同一保存的搜索会各自命中自己。"
+/>
+
+## 动手清单
+
+1. 进仓库 **Issues** 搜索框，粘贴：`is:open is:issue label:bug`，回车。
+2. 再加一段 `assignee:@me`，观察结果如何收窄。
+3. 用 `no:milestone` 找出「还没排进版本」的 Issue。
+4. 把满意的一条搜索 **Save** 成 `我的待办`。
+
+## 主要出处
+
+📖 [GitHub Docs · 搜索 Issue 与 PR](https://docs.github.com/zh/issues) · [按里程碑筛选](https://docs.github.com/zh/issues/using-labels-and-milestones-to-track-work)
+
+<LessonComplete id="issue-search-filter" />

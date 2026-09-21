@@ -1,0 +1,56 @@
+---
+title: 用 Milestone 排版本节奏
+description: 把一堆 Issue 归成「这一版要交付的东西」
+---
+
+## Milestone 是什么
+
+**Milestone（里程碑）= 一个带截止日期的 Issue/PR 集合**。它回答一个问题：*"v1.0 到底要做完哪些事？"* 每完成一个 Issue，里程碑的进度条就往前走一格。
+
+<Callout type="info">
+对个人项目，里程碑就是你的「版本计划」：`MVP`、`v1.0`、`Beta`。把要做的 Issue 归进去，你就永远知道「这一版还剩几件事没做完」。
+</Callout>
+
+## 关键字段
+
+| 字段 | 作用 |
+| --- | --- |
+| Title | 如 `v1.0`、`2026-Q4` |
+| Description | 这一版的目标 / 范围 |
+| Due date | 截止日期，逾期会在页面标红 |
+| Open / Closed 计数 | 进度条，含 Issue 与 PR 各多少 |
+
+一个 Issue/PR 只能归属**一个**里程碑（它是单选，不像 label 可多贴）。
+
+## Milestone vs Label
+
+- **Label** 回答「这是*什么类型*的事」——可多贴，长期存在。
+- **Milestone** 回答「这是*哪一版*要交付的事」——单选，有终点，做完就 close。
+
+两者正交，组合使用：`milestone:v1.0 label:bug`。
+
+## 自测
+
+<Quiz
+  id="issue-milestone-q1"
+  question="一个 Issue 最多能归属几个 milestone？"
+  options={[
+    { label: "只能一个", correct: true },
+    { label: "不限多个" },
+    { label: "最多两个" },
+  ]}
+  explain="milestone 是单选，就像「这个任务属于哪个版本」通常唯一；而 label 可多贴。"
+/>
+
+## 动手清单
+
+1. 仓库 → **Issues** → 上方 **Milestones** → **New milestone**。
+2. 建一个 `v0.1`，填一句目标描述，设个两周后的 due date。
+3. 回到你的 Issue 列表，勾选几个 → 右侧 **Milestone** → 归入 `v0.1`。
+4. 打开 **Milestones** 页，看这一版的 open/closed 进度条如何变化。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于里程碑](https://docs.github.com/zh/issues/using-labels-and-milestones-to-track-work/about-milestones) · [创建和编辑里程碑](https://docs.github.com/zh/issues/using-labels-and-milestones-to-track-work/creating-and-editing-milestones-for-issues-and-pull-requests)
+
+<LessonComplete id="issue-milestones" />

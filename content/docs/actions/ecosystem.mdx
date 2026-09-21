@@ -1,0 +1,94 @@
+---
+title: Action 生态与复用
+description: 别写重复流水线——Marketplace、starter-workflows、matrix、reusable
+---
+
+## 你已经会「抄」了
+
+前几节课里的 `actions/checkout@v6`、`actions/setup-node@v5` 都是**别人写好的 action**——GitHub 官方维护、社区经年验证。Actions 真正的放大器不是 YAML 语法，而是这个生态：**99% 的流水线不需要从零写**。
+
+## 三个「抄」的地方
+
+| 来源 | 是什么 | 怎么用 |
+| --- | --- | --- |
+| [GitHub Marketplace](https://github.com/marketplace?type=actions) | 第三方发布的 action | 搜「deploy vercel production」这类动词，找下载量高、有文档的 |
+| [actions/starter-workflows](https://github.com/actions/starter-workflows) | GitHub 官方按语言/场景写的完整流水线 | 新建 workflow 时「浏览所有 Actions」直接选，或抄它的 job 结构 |
+| 自家仓库的 `.github/workflows/` | 你自己积累的模式 | 新项目直接复制改名——这就是团队资产的雏形 |
+
+<Callout type="warn">
+用第三方 action = 让它的代码在你的 runner 上执行。优先选 `actions/` 组织下的官方件；用第三方的就**锁定到 commit SHA 或大版本 tag**，别用 `@master`。
+</Callout>
+
+## matrix：一份 YAML 测遍所有版本
+
+「Node 18 / 20 / 22 都要测」不用复制三个 job——用矩阵：
+
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm ci && npm test
+```
+
+GitHub 自动展开成 **2×3 = 6 个并行 job**，任何一个红都看得见。跨 OS、跨版本、跨配置的组合测试全靠它。
+
+## reusable workflow：流水线也能被 import
+
+多个仓库都有几乎一样的 CI？把公共部分抽成一个带 `on: workflow_call` 的文件，别的仓库像函数一样调用：
+
+```yaml
+# 某仓库的 ci.yml 整个文件可以只有这几行
+name: CI
+on: push
+jobs:
+  call-ci:
+    uses: yongkong/.github/.github/workflows/node-ci.yml@main
+```
+
+这是组织级的 DRY——改一处模板，所有仓库生效。团队推广期最值得投入的基础设施。
+
+## 自测
+
+<Quiz
+  id="actions-ecosystem-q1"
+  question="matrix 里写了 node: [18, 20, 22] 和 os 两个值，GitHub 会跑几个 job？"
+  options={[
+    { label: "6 个（全组合展开）", correct: true },
+    { label: "2 个（取第一个组合）" },
+    { label: "5 个（矩阵长度相加）" },
+  ]}
+  explain="matrix 是笛卡尔积：3 个 node × 2 个 os = 6 个并行 job，任红即显红。"
+/>
+
+<Quiz
+  id="actions-ecosystem-q2"
+  question="引入第三方 action 时，更安全的选择是？"
+  options={[
+    { label: "锁定大版本 tag 或 commit SHA", correct: true },
+    { label: "用 @master 永远最新" },
+    { label: "不写版本让它默认" },
+  ]}
+  explain="@master 内容可被随时改动（或被劫持）。锁版本让上游变更必须经你确认才能进入流水线。"
+/>
+
+## 动手清单
+
+1. 去 Marketplace 搜一个你场景相关的 action（如部署、发 npm 包、自动 label），读它的 README 示例。
+2. 给你练手仓库的 CI 加上 `matrix.node: [20, 22]`，看 Actions 页展开成并行 job。
+3. 打开 actions/starter-workflows，对比官方 `node.js.yml` 和你自己写的差在哪。
+4. 模块三通关——你已经能从零搭一条带质量门和部署的完整流水线了。
+
+## 主要出处
+
+📖 [GitHub Docs · 浏览和自定义启动工作流](https://docs.github.com/zh/actions/how-tos/write-workflows/choose-what-workflows-do/create-a-new-workflow) · [matrix 策略](https://docs.github.com/zh/actions/how-tos/manage-workflow-runs/use-matrices-to-run-jobs-in-parallel) · [reusable workflows](https://docs.github.com/zh/actions/how-tos/reuse-automations/reuse-workflows-as-building-blocks)
+
+<LessonComplete id="actions-ecosystem" />

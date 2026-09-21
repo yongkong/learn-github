@@ -1,0 +1,96 @@
+---
+title: 自动部署：push 即上线
+description: 把「合并 → 构建 → 上线」连成一条流水线
+---
+
+## 部署是 CD 的最后一步
+
+前两节课你会了「跑测试」。CD 的完整闭环是：**代码合进 main → 自动构建 → 自动部署到线上**。对用户来说的体验：merge 完 PR，几分钟后线上就更新了，中间什么都不用点。
+
+本站（learn-github）本身就是这么部署的：push 到 `main` → GitHub Actions 构建 → 发布到 Vercel 生产环境。
+
+## 两种主流做法
+
+| 方式 | 谁在部署 | 适合 |
+| --- | --- | --- |
+| A. 平台挂钩（如 Vercel/Netlify） | 平台监听 git 仓库，push 自动构建部署 | 前端/全栈站点，**最省事** |
+| B. Actions 里写部署步骤 | 你的 workflow 调用平台 CLI / SSH / 容器 | 平台不支持、或要在部署前后做定制动作 |
+
+<Callout type="info">
+选 A 还是 B 不冲突：很多团队用 A 管预览环境（每个 PR 一个临时 URL），用 B 管生产发布（合并 main 才触发）。
+</Callout>
+
+## 方式 B 的最小部署流水线
+
+关键是 `needs:`——**部署 job 必须等测试 job 绿了才跑**：
+
+```yaml
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npm test
+
+  deploy:
+    needs: test                      # 测试不绿，绝不部署
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+      - run: npm ci && npm run build
+      - run: npx vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+```
+
+读法：`on: push + branches: [main]` 限定「只有合进 main 才部署」；`needs: test` 保证质量门；`environment` 挂上审批和专属 secrets。三层保险叠起来，才敢让「合并即上线」。
+
+## 部署了坏的怎么办
+
+- **回滚比修复快**：Vercel 这类平台每个部署都是不可变快照，一键 promote 上一个版本。
+- **保留部署历史**：Actions 的 workflow 运行记录 + 平台的 deployment 列表，就是你的审计日志。
+- 给部署 job 加 `environment` 人工审批后，production 上线前永远有一道「人质询机器」的机会。
+
+## 自测
+
+<Quiz
+  id="actions-deploy-q1"
+  question="要让 deploy  job 在 test job 成功后才运行，靠哪个字段？"
+  options={[
+    { label: "needs", correct: true },
+    { label: "if" },
+    { label: "顺序写在下面就行" },
+  ]}
+  explain="jobs 之间默认并行，必须用 needs: test 显式声明依赖，否则测试和部署会同时开跑。"
+/>
+
+<Quiz
+  id="actions-deploy-q2"
+  question="「push 即上线」的流水线里，哪个配置把部署范围限定在主干？"
+  options={[
+    { label: "on.push.branches: [main]", correct: true },
+    { label: "runs-on: ubuntu-latest" },
+    { label: "permissions: write" },
+  ]}
+  explain="触发过滤 branches: [main] 保证功能分支的 push 不会误触生产部署。"
+/>
+
+## 动手清单
+
+1. 挑一个能跑起来的小项目（哪怕一个静态页），部署到 Vercel 免费额度上。
+2. 给它写一条 `deploy.yml`：`on: push: branches: [main]` + `needs` 链 + `secrets` 鉴权。
+3. 在 feature 分支随便 push 几次，确认**不会**触发部署；合进 main，确认**会**。
+4. 故意让测试失败再合并一次，观察 deploy job 被跳过——这就是 `needs` 在保护你。
+
+## 主要出处
+
+📖 [GitHub Docs · 部署 environments](https://docs.github.com/zh/actions/how-tos/manage-workflow-runs/deploy-to-environments) · [needs 关键字](https://docs.github.com/zh/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds)
+
+<LessonComplete id="actions-deploy" />

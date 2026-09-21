@@ -1,0 +1,83 @@
+---
+title: Pull Request 基础
+description: branch → PR → merge 的完整模型与体检单
+---
+
+## PR 到底是什么
+
+**Pull Request = 一次「请求把我的分支改动合并进目标分支」的正式提案**，附带讨论、审查、自动化检查。它不是「拉取」——名字有历史包袱，你实际是在**推**改动去请求合并。
+
+## 一个 PR 的构成
+
+```
+base:main   ◀── merge 目标
+   ▲
+   │  compares against
+feat/login (head 分支)  ── 你的改动都在这
+```
+
+- **base 分支**：改动最终要进的地方（通常 `main`）。
+- **head / compare 分支**：你干活的功能分支。
+- PR 页面 = 这俩之间的 diff + 讨论 + 检查。
+
+## 开 PR 的标准流程
+
+1. 从最新 `main` 切一个分支：`git switch -c feat/login`
+2. 提交改动并 `git push -u origin feat/login`
+3. GitHub 仓库页会出现 **"Compare & pull request"** 黄条 → 点开
+4. 写标题 + 描述（为什么改、怎么验证、关联哪个 Issue `closes #N`）
+5. 指定 reviewer / label / milestone → **Create pull request**
+
+## Draft PR（草稿）
+
+创建时勾 **Create draft PR**：表示「还在进行，别急着 review」。适合先占个位、边写边征求意见。准备好点 **Ready for review** 转正。
+
+## PR 页面体检单（每课都会用到）
+
+| 区域 | 看什么 |
+| --- | --- |
+| Conversation | 讨论、commit 列表、CI 状态、review 意见 |
+| Files changed | 逐文件 diff，可加行内评论 |
+| Checks / Workflow | Actions 跑得快不快、有没有红 |
+| 右侧栏 | reviewer、assignee、label、milestone、关联 Issue |
+
+<Callout type="info">
+**solo 项目也值得用 PR。** 哪怕只有你一个人：用「分支 + PR + 自己合并」代替直推 main，你会获得一条干净的改动审计线，也是练习团队流程的最低成本方式。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="pr-basics-q1"
+  question="PR 里 base 分支指的是？"
+  options={[
+    { label: "改动要合入的目标分支", correct: true },
+    { label: "你正在干活的功能分支" },
+    { label: "仓库的默认克隆地址" },
+  ]}
+  explain="base 是合并目标（常为 main），head/compare 才是你写代码的功能分支。"
+/>
+
+<Quiz
+  id="pr-basics-q2"
+  question="Draft PR 的主要作用是？"
+  options={[
+    { label: "占位但暂不请求合并", correct: true },
+    { label: "自动合并无需 review" },
+    { label: "把 PR 永久归档关闭" },
+  ]}
+  explain="Draft 表示进行中、不应被 review/合并，准备好后手动转 Ready for review。"
+/>
+
+## 动手清单
+
+1. 在一个练习仓库：`git switch -c feat/hello`，随便改一个文件并 commit、push。
+2. 在 GitHub 用 **Compare & pull request** 开一个 PR，描述里写「验证方式：看 README 变化」。
+3. 先勾 Draft 创建，再点 **Ready for review** 转正，感受两种状态差异。
+4. 不合并，先留着——学完 CI 那几课后，我们回来给它加 required check 再合并。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于拉取请求](https://docs.github.com/zh/pull-requests) · [分支概念](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches)
+
+<LessonComplete id="pr-basics" />

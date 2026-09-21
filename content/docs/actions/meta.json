@@ -1,0 +1,11 @@
+{
+  "title": "模块三 · Actions 与 CI/CD",
+  "pages": [
+    "concepts",
+    "first-workflow",
+    "triggers",
+    "secrets",
+    "deploy",
+    "ecosystem"
+  ]
+}

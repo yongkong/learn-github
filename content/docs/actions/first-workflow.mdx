@@ -1,0 +1,87 @@
+---
+title: 你的第一条流水线
+description: 提交一个 YAML，让每次 push 自动跑测试
+---
+
+## 目标
+
+给一个 Node.js/TS 项目加一条 CI：每次 push / 开 PR，GitHub 自动 `npm ci` 再 `npm test`。测试挂了流水线就变红。就这么点 YAML：
+
+```yaml
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6        # ① 克隆仓库
+      - uses: actions/setup-node@v5      # ② 装 Node
+        with:
+          node-version: 22
+          cache: npm                     #   顺带缓存依赖，提速
+      - run: npm ci                      # ③ 按 lock 精确装依赖
+      - run: npm test                    # ④ 跑测试，非 0 退出即红
+```
+
+## 四个必须消化的点
+
+1. **`actions/checkout` 不是自动的。** runner 是台干净虚拟机，第一步永远先把它 clone 下来，后面才有代码可测。
+2. **`uses:` vs `run:`。** `uses` 引用现成 action（社区维护、经过验证）；`run` 是你熟悉的 shell 命令。**能用现成就别自己写。**
+3. **退出码决定红绿灯。** 任何 `run` 命令非 0 退出 → job 立即红、后续步骤不跑。
+4. **`@v6` 是版本标签。** action 也是带版本的代码，锁版本防止某天突然坏掉。
+
+<Callout type="warn">
+**免费账户配额：** 公共仓库用标准托管 runner **无限免费**；私有仓库每月 2,000 分钟。练手阶段远够用。
+</Callout>
+
+## YAML 的两个坑
+
+- **缩进只能用空格，不能用 Tab**，且同层必须对齐。
+- 多行命令用 `|`（保留换行），单行折行用 `>`：
+
+  ```yaml
+  - run: |
+      echo "第一行"
+      npm run build
+  ```
+
+## 自测
+
+<Quiz
+  id="actions-first-q1"
+  question="为什么几乎每个 workflow 第一步都是 actions/checkout？"
+  options={[
+    { label: "runner 干净需先取代码", correct: true },
+    { label: "checkout 会顺便跑测试" },
+    { label: "它是强制的计费步骤" },
+  ]}
+  explain="runner 是全新虚拟机，不 checkout 就没有你的代码，后续步骤无从谈起。"
+/>
+
+<Quiz
+  id="actions-first-q2"
+  question="`npm test` 这步失败时，CI 靠什么判定整个 job 变红？"
+  options={[
+    { label: "命令退出码非 0", correct: true },
+    { label: "日志里出现红色字" },
+    { label: "运行时间超过一分钟" },
+  ]}
+  explain="GitHub 看进程退出码：0 成功、非 0 失败并中断该 job。"
+/>
+
+## 动手清单
+
+1. 挑一个 JS/TS 仓库（有 `package.json`；没有 test 就先加 `"test": "echo ok"`）。
+2. 建 `.github/workflows/ci.yml`，粘贴上面的 YAML，commit + push。
+3. 打开仓库 **Actions** 选项卡 → 点进这次运行 → 逐个展开 steps 看实时日志。
+4. **亲手弄坏一次**：把某测试改成会失败再 push，看它变 ❌；改回来看它变 ✅。这一步会建立你对 CI 的直觉与信任。
+
+## 主要出处
+
+📖 [GitHub Docs · Actions 快速入门](https://docs.github.com/zh/actions/get-started/quickstart) · [构建和测试代码](https://docs.github.com/zh/actions/tutorials/build-and-test-code)
+
+<LessonComplete id="actions-first-workflow" />

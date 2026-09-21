@@ -1,0 +1,88 @@
+---
+title: 解决合并冲突
+description: 什么时候能在网页点两下、什么时候必须回本地
+---
+
+## 冲突从哪来
+
+**同一段代码，base 和 head 各改成了不同版本**，GitHub 无法自动决定听谁的——这就是 merge conflict。它不是错误，是并行开发的正常结果。
+
+典型触发：你开 PR 期间，别人（或你在另一个分支）也改了同一个文件的同一行，且已经先进了 main。
+
+## GitHub 的判定
+
+PR 页面会显示：
+
+- **"This branch has no conflicts with the base branch"** → 可直接合并。
+- **"This branch has conflicts that must be resolved"** → 挡住合并，给你 **Resolve conflicts** 按钮。
+
+## 路线一：网页端解决（适合简单冲突）
+
+1. 点 **Resolve conflicts**。
+2. GitHub 把冲突块标出来，中间有 `<<<<<<< HEAD` / `=======` / `>>>>>>>` 分隔：
+
+   ```text
+   <<<<<<< base
+   const x = mainVersion
+   =======
+   const x = prVersion
+   >>>>>>> feat
+   ```
+3. 手工删掉多余标记，留下你决定要的那份（或整合两者）。
+4. **Commit resolved conflicts** → 冲突消除，PR 恢复可合并。
+
+## 路线二：回本地解决（适合复杂冲突）
+
+网页编辑器撑不住多文件、语义冲突。回本地：
+
+```bash
+git switch feat/login
+git merge main            # 或 git rebase main，取决于团队约定
+# 打开冲突文件，编辑保留正确内容，删除冲突标记
+git add <解决后的文件>
+git commit                # merge 方式会产生一个合并提交
+git push
+```
+
+push 回 PR 分支后，GitHub 自动重判冲突状态。
+
+<Callout type="warn">
+**别用「关掉 PR 重开」逃避冲突**，那只会把问题推后。冲突要么网页要么本地解决，早解早轻松。若不确定保留哪版，找改那行代码的人问一句。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="pr-conflict-q1"
+  question="GitHub 什么时候判定 PR 存在必须先解决的冲突？"
+  options={[
+    { label: "双方改了同处且不同", correct: true },
+    { label: "只要分支落后于 main" },
+    { label: "只要 PR 里有多个提交" },
+  ]}
+  explain="单纯落后但没碰到同一处，可自动合并；只有同一处被改成不同版本才叫冲突。"
+/>
+
+<Quiz
+  id="pr-conflict-q2"
+  question="本地解决冲突时，标记冲突区域边界的是？"
+  options={[
+    { label: "<<<<<<< 与 ======= 标记", correct: true },
+    { label: "TODO 与 FIXME 注释" },
+    { label: "README 与 CHANGELOG 文件" },
+  ]}
+  explain="git 用 <<<<<<<、=======、>>>>>>> 三组标记圈出两个版本，人工删掉标记并保留正确内容。"
+/>
+
+## 动手清单
+
+1. 在练习仓库制造一次冲突：开 PR 改了 `README` 第 1 行，然后在 main 上直接改同一行成不同内容。
+2. 回到 PR，看到 **Resolve conflicts**，用**网页路线**解决并 commit。
+3. 再制造一次冲突，改用**本地路线**：`git merge main` → 编辑 → `git add` → `git commit` → `git push`。
+4. 两条路线都走通后，你就再不怕冲突了。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于解决冲突](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts) · [在网页解决冲突](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line)
+
+<LessonComplete id="pr-conflicts" />

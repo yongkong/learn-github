@@ -1,0 +1,72 @@
+---
+title: 组织与团队权限
+description: 从「我的仓库」到「我们的仓库」
+---
+
+## 个人账号撑不住的协作
+
+仓库多了、人多了，个人账号模式会碰到硬限制：权限只能一个人一个人地给、账单挂在你个人卡上、没有团队级的策略统一（比如「所有仓库的 main 都必须有分支保护」）。**Organization（组织）** 就是为解决这个而存在的：把仓库和人聚到一个中立名下。
+
+创建：GitHub 网页右上角 → **Organizations → New organization**（Free 计划就够用，不限公共仓库）。
+
+## 三件套：Team / Role / Repo
+
+组织的权限模型可以压缩成一句话：**人进了 Team，Team 对 Repo 持有一个 Role**。
+
+| Role（对仓库） | 能做什么 |
+| --- | --- |
+| Read | 只看（外部协作者/实习生） |
+| Write | 日常开发：push、开 PR、triage Issue |
+| Maintain | 管仓库设置，但不碰危险区 |
+| Admin | 全权（越少人越好） |
+
+- 给**人**逐个授权是债；给 **Team**（如 `@myorg/backend`）授权才是可维护的做法。
+- 嵌套 Team（`backend/api`、`backend/worker`）适合 10 人以上规模，起步别过度设计。
+
+## 组织级利器
+
+- **默认分支保护模板**：新仓库自动带上规矩，不用每个仓库手动开。
+- **自定义组织角色**（如「只读安全审计」「发布机器人」）。
+- **App 安装范围**：第三方 GitHub App 只对指定仓库生效，最小权限。
+- **审计日志 / SSO**（企业版）：布道团队扩大后自然会用到。
+
+<Callout type="info">
+**布道场景实操**：想把课程站 learn-github 开放给同事贡献？建一个组织、把仓库 transfer 过去、拉一个 `course-contributors` team 给 Write——同事就能开 PR，而合并大权仍在你的 CODEOWNERS + 分支保护手里。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="governance-organizations-q1"
+  question="组织里推荐给协作成员批量授权的方式是？"
+  options={[
+    { label: "把人选进 Team，对 Team 授予仓库 Role", correct: true },
+    { label: "在仓库里逐人添加 Collaborator" },
+    { label: "把所有人设为组织 Owner" },
+  ]}
+  explain="人 → Team → Repo+Role 是组织权限的正统链路；逐人授权难维护，全员 Owner 是权限灾难。"
+/>
+
+<Quiz
+  id="governance-organizations-q2"
+  question="日常开发同事（要写代码、管 Issue）应给哪个仓库角色？"
+  options={[
+    { label: "Write", correct: true },
+    { label: "Read" },
+    { label: "Admin" },
+  ]}
+  explain="Write 覆盖日常开发所需（push/PR/triage）；Maintain/Admin 留给仓库维护者，遵循最小权限。"
+/>
+
+## 动手清单
+
+1. 建一个免费组织（起个团队感的名字），把练手仓库 transfer 过去。
+2. 建一个 team，邀请一位同事（或自己的备用号），授予 Write。
+3. 在组织设置里配一条「新建仓库默认分支保护」，开一个新仓库验证规则自动生效。
+4. 回顾上一课：把组织的 `CODEOWNERS` 从个人账号迁到 `@org/team` 写法。
+
+## 主要出处
+
+📖 [GitHub Docs · 了解组织](https://docs.github.com/zh/organizations/core-functions-of-a-organization/about-organizations) · [仓库基础角色](https://docs.github.com/zh/organizations/managing-peoples-access-to-your-organization-with-roles/roles-in-an-organization)
+
+<LessonComplete id="governance-organizations" />

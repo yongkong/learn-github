@@ -1,0 +1,74 @@
+---
+title: 用 Label 给 Issue 分类
+description: bug / enhancement / good first issue —— 一套颜色背后的秩序
+---
+
+## Label 是什么
+
+**Label（标签）是给 Issue 和 PR 贴的分类小纸条**。它有名字、有颜色，可筛选、可统计。GitHub 自带一套默认标签，你也可以自定义。
+
+<Callout type="info">
+**给个人项目也要用 label。** 它是你区分「这是 bug 还是我想做的功能」的最低成本方式，也是未来团队接手时的通用语言。
+</Callout>
+
+## 默认标签速览
+
+| 标签 | 含义 | 典型用法 |
+| --- | --- | --- |
+| `bug` | 意外错误 / 功能不符预期 | 用户报的故障 |
+| `documentation` | 文档相关 | 补注释、改 README |
+| `duplicate` | 与已有 Issue 重复 | 关闭冗余报告 |
+| `enhancement` | 新功能 / 改进诉求 | 需求收集 |
+| `good first issue` | 适合新贡献者 | 开源招募 |
+| `help wanted` | 欢迎外部贡献 | 开源招募 |
+| `invalid` | 不属于本项目的有效问题 | 关闭垃圾 Issue |
+| `question` | 使用咨询 | 支持答疑 |
+| `wontfixed` | 决定不处理 | 明确拒绝 |
+
+## 命名与配色约定（业界常见）
+
+- **类型**用一类色：bug 红、enhancement 蓝、documentation 绿。
+- **优先级**用前缀：`P0` / `P1` / `P2`，或 `priority: high`。
+- **领域/模块**用前缀：`area: backend`、`area: ui`、`lang: typescript`。
+- 避免含义重叠：有了 `enhancement` 就别再造 `feature-request`。
+
+<Callout type="warn">
+标签**越多越乱**。起步 6~10 个足矣，覆盖「类型 + 优先级 + 领域」三个维度即可，别一上来建 30 个。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="issue-labels-q1"
+  question="一个外部用户提的功能改进诉求，最贴切的默认标签是？"
+  options={[
+    { label: "enhancement", correct: true },
+    { label: "bug" },
+    { label: "invalid" },
+  ]}
+  explain="新功能/改进 = enhancement；bug 是「本该能用却坏了」；invalid 是完全无效。"
+/>
+
+<Quiz
+  id="issue-labels-q2"
+  question="想吸引第一次contributors 来贡献，应贴哪个标签？"
+  options={[
+    { label: "good first issue", correct: true },
+    { label: "wontfixed" },
+    { label: "documentation" },
+  ]}
+  explain="good first issue 是 GitHub 对外招募新手贡献者的标准标签，会被 Discover 页聚合。"
+/>
+
+## 动手清单
+
+1. 仓库 → **Issues** → 上方 **Labels** → 浏览默认标签，看它们的名字与颜色。
+2. **New label**：建 3 个属于你的标签：`P0`、`P1`、`area: frontend`（各配一个颜色）。
+3. 回到上节课建的那个 Issue，右侧 **Labels** 里给它贴上 `P1` 和 `area: frontend`。
+4. 在 Issue 列表上方点 label，体验按标签过滤。
+
+## 主要出处
+
+📖 [GitHub Docs · 使用标签和里程碑跟踪工作](https://docs.github.com/zh/issues/using-labels-and-milestones-to-track-work) · [管理标签](https://docs.github.com/zh/issues/using-labels-and-milestones-to-track-work/managing-labels)
+
+<LessonComplete id="issue-labels" />

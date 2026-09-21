@@ -1,0 +1,77 @@
+---
+title: CONTRIBUTING 与社区健康
+description: 把「怎么跟我合作」写成一个文件，让人可以对你的项目贡献
+---
+
+## 最后一块拼图：降低「参与成本」
+
+前三课管住了「谁能合并、谁该 review、怎么发版」。但一个能被同事甚至陌生人参与的项目，还需要回答：**第一次来的人，怎么知道规矩？** 答案是把规矩写成仓库里的标准文件——GitHub 会在别人开 Issue/PR 时自动展示它们。
+
+## 四件套
+
+| 文件 | 作用 | 何时被看到 |
+| --- | --- | --- |
+| `CONTRIBUTING.md` | 贡献指南：环境怎么跑、分支怎么开、PR 要求、沟通渠道 | 开 PR/Issue 时页面顶部出现链接 |
+| `CODE_OF_CONDUCT.md` | 行为准则（可直接选 Contributor Covenant 模板） | 仓库 Community 页 |
+| `.github/ISSUE_TEMPLATE/*` | 模块一学过的 Issue 模板 | 别人新建 Issue 的表单 |
+| `SECURITY.md` | 「发现漏洞别开公开 Issue，联系 xxx」 | 新建 Issue 时的提示 |
+
+模板创建路径：**Settings → Community → Community profiles → Set up templates**——勾选即生成骨架文件，不用背格式。
+
+## 写好 CONTRIBUTING 的原则
+
+它是「最短路径文档」，不是百科全书：
+
+1. **本地跑起来的确切命令**（`pnpm install && pnpm dev`），包括 Node 版本要求；
+2. **一个真实的第一步**：如「认领带 `good first issue` label 的 Issue」；
+3. **PR 验收标准**：CI 必须绿、需要 review、commit 规范；
+4. **会发生什么、多久有回复**：管理预期，减少「交了 PR 石沉大海」的怨气。
+
+<Callout type="info">
+**Community Standards 体检**：仓库首页概览栏 → Community standards 一节会给你一张清单，缺什么补什么。全绿意味着 GitHub 认定这是一个「欢迎外人参与」的仓库——布道时这是说服力。
+</Callout>
+
+## 从 solo 到社区的演进路线
+
+- **阶段一（solo）**：只写 CONTRIBUTING 的「本地怎么跑 + 版本纪律」，写给三个月后的自己；
+- **阶段二（团队）**：加上分支模型、review 要求、CODEOWNERS 分工；
+- **阶段三（开放）**：加 Issue 模板、good first issue 标签、SECURITY，接受外部 PR。
+
+本站 learn-github 正处在从二到三的路上——你读完本课就可以给它提第一个真正的 PR。
+
+## 自测
+
+<Quiz
+  id="governance-contributing-q1"
+  question="访客在 GitHub 上为你仓库新建 Issue 时，哪些内容会生效？"
+  options={[
+    { label: ".github/ISSUE_TEMPLATE 里的模板", correct: true },
+    { label: "README 的贡献章节" },
+    { label: "CONTRIBUTING.md 全文弹窗" },
+  ]}
+  explain="Issue 模板会被渲染成可选表单；CONTRIBUTING 只在页面提供链接，不会弹窗。"
+/>
+
+<Quiz
+  id="governance-contributing-q2"
+  question="判断仓库「是否对贡献者友好」的官方体检入口是？"
+  options={[
+    { label: "概览页的 Community standards 清单", correct: true },
+    { label: "Insights → Traffic" },
+    { label: "Actions 运行历史" },
+  ]}
+  explain="Community standards 列出 CONTRIBUTING/CODEOWNERS/License/COC 等文件是否齐备。"
+/>
+
+## 动手清单
+
+1. 用 Settings → Community profiles 给练手仓库生成 CONTRIBUTING.md 骨架并填写。
+2. 从模板库里挑一个 Contributor Covenant 作为 CODE_OF_CONDUCT.md。
+3. 检查 Community standards 清单，把缺的补齐（通常缺 License 或 SECURITY）。
+4. **毕业动作**：给 learn-github 仓库开一个 Issue 或 PR，完整走一遍你学过的全部流程。
+
+## 主要出处
+
+📖 [GitHub Docs · 为项目在 GitHub 上做出贡献做考虑](https://docs.github.com/zh/communities/setting-up-your-project-for-healthy-contribitions/considering-what-makes-your-project-welcoming-and-contributor-friendly) · [创建贡献指南](https://docs.github.com/zh/communities/setting-up-your-project-for-healthy-contribitions/creating-a-guidelines-for-repository-contribution)
+
+<LessonComplete id="governance-contributing" />

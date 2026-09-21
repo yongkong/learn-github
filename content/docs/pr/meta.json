@@ -1,0 +1,12 @@
+{
+  "title": "模块二 · PR 与 Code Review",
+  "pages": [
+    "git-vs-github",
+    "pr-basics",
+    "fork-model",
+    "code-review",
+    "merge-strategies",
+    "conflicts",
+    "auto-merge"
+  ]
+}

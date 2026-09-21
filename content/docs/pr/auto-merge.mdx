@@ -1,0 +1,72 @@
+---
+title: Auto-merge 与 Required Checks
+description: 设好条件，让 PR 一旦全绿自动合并
+---
+
+## 把前面几课串起来
+
+到这里你已经会：开 PR、写 `closes #N`、做 review、选合并方式。本课把 **CI（模块 3）+ PR** 缝合成一条**自动化流水线**：PR 满足所有条件的那一刻，**自动合并**，你不用守着屏幕点按钮。
+
+## 什么是 Required Checks
+
+**Required checks（必需状态检查）** = 「这个 PR 必须通过这些 CI，才允许被合并」。它们在分支保护里配置（模块 4 详讲），一旦有检查在跑或变红，**Merge 按钮是灰的**。
+
+## Auto-merge 干什么
+
+**Auto-merge（自动合并）** 是你对 GitHub 说一句：
+
+> 「等这个 PR 的所有必需检查通过、review 也批了，你替我自动按我选的方式合并掉。」
+
+设置路径：PR 页面 **Merge pull request** 按钮下拉 → **Enable auto-merge** → 选合并方式 → **Confirm**。
+
+启用后 PR 会显示 **"Waiting for status checks to succeed..."**。一旦全绿：自动合并、关联 Issue 自动关闭、通知照常发。
+
+## 它依赖什么
+
+| 前置 | 来源 |
+| --- | --- |
+| 有 CI 检查在跑 | 模块 3：Actions workflow |
+| 检查被设为 required | 模块 4：分支保护 |
+| `closes #N` 正确 | 模块 1：Issue 联动 |
+| review 门槛达标 | 本课 + 模块 4 |
+
+<Callout type="info">
+**为什么值得用 auto-merge？** 想象团队 10 个人，一天几十个 PR 等 CI。没人会盯着每个 PR 绿灯那一刻手点合并。auto-merge 把「绿了就合」交给机器，人类只在有问题时介入。这正是你以后向团队布道的核心卖点。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="pr-automerge-q1"
+  question="启用 auto-merge 后，PR 会在什么时候自动合并？"
+  options={[
+    { label: "所有必需条件满足时", correct: true },
+    { label: "一开 PR 就立刻合并" },
+    { label: "作者一 push 就自动合并" },
+  ]}
+  explain="auto-merge 是「等」required checks 与 review 全通过后自动合并，不是无条件合并。"
+/>
+
+<Quiz
+  id="pr-automerge-q2"
+  question="要让某个 CI 检查成为「不过就不能合」的门槛，在哪里配置？"
+  options={[
+    { label: "分支保护里的 required checks", correct: true },
+    { label: "Issue 模板的必填字段里" },
+    { label: "仓库 README 的说明段落" },
+  ]}
+  explain="把 workflow 的 job 设为 required check 是在分支保护规则里完成的（模块 4）。"
+/>
+
+## 动手清单
+
+1. 先确保你已学完模块 3 并给仓库配好一个 CI workflow（哪怕只跑 `npm test`）。
+2. 模块 4 学完分支保护后，回来把该检查设为 required。
+3. 在那之前，先在任意 PR 上找到 **Enable auto-merge** 入口，看它当前提示你缺什么条件。
+4. 心里建立这条自动化闭环：**push → CI → 全绿 → 自动合并 → Issue 自动关闭。**
+
+## 主要出处
+
+📖 [GitHub Docs · 自动合并拉取请求](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/incorporating-changes-in-a-pull-request/automatically-merging-a-pull-request) · [关于分支保护](https://docs.github.com/zh/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches)
+
+<LessonComplete id="pr-auto-merge" />

@@ -1,0 +1,76 @@
+---
+title: CODEOWNERS：让评审人自动上门
+description: 一个文本文件，定义「改到这块代码必须谁点头」
+---
+
+## 它解决什么
+
+团队协作最耗人的环节之一：PR 开出来，**不知道该 @ 谁 review**；或者谁都以为别人会看，结果没人看。`CODEOWNERS` 文件把「哪块代码归谁管」写进仓库，GitHub 自动执行：
+
+- PR 碰到某段路径 → 对应 owner **自动被请求 review**（还会带 `*auto assigned*` 标记）。
+- 配合分支保护的 *Require reviews from code owners* → **没有 owner 批准就合不进去**。
+
+## 写法：三行学会
+
+文件放在仓库根目录、`docs/` 或 `.github/` 下，文件名就是 `CODEOWNERS`。语法是「路径 + 负责人」：
+
+```text
+# 注释用 # 开头
+*                          @yongkong
+/content/**                @yongkong
+/src/api/**                @backend-team_lead
+*.md                       @docs-writers
+```
+
+- `*` 兜底：所有没被更具体规则命中的文件。
+- **最后匹配的规则优先**——写得越具体的放越下面。
+- 可以是个人 `@user`，也可以是团队 `@org/team-name`。
+
+<Callout type="warn">
+owner 是「必须批准的人」而不是「偷偷看的人」。写太多人 = 每个人都在等别人，等于没人负责。**一条路径一到两个 owner 最合适**，solo 项目全仓库写自己就行。
+</Callout>
+
+## 和分支保护的组合拳
+
+单独放一个 CODEOWNERS 文件只是「自动 @ 人」；加上分支保护规则里的 **Require reviews from code owners** 才有强制力。两者一起上，才是完整的「代码户籍制度」：
+
+1. 贡献者改 `/src/api/**` 开 PR；
+2. GitHub 自动请求 `@backend-team_lead` review；
+3. 分支保护要求 owner 批准 + CI 绿 → 才允许 Merge。
+
+## 自测
+
+<Quiz
+  id="governance-codeowners-q1"
+  question="CODEOWNERS 里两条规则同时命中一个文件时，哪条生效？"
+  options={[
+    { label: "写在后面的（最后匹配优先）", correct: true },
+    { label: "写在最前面的" },
+    { label: "两条都生效，随机选" },
+  ]}
+  explain="GitHub 采用最后匹配规则，所以通用规则（如 *）放最上，具体规则往下写。"
+/>
+
+<Quiz
+  id="governance-codeowners-q2"
+  question="要让「没有 owner 批准就合不进」，除了 CODEOWNERS 文件还必须做什么？"
+  options={[
+    { label: "分支保护勾选 Require reviews from code owners", correct: true },
+    { label: "在 README 里写明规矩" },
+    { label: "给 owner 开管理员权限" },
+  ]}
+  explain="CODEOWNERS 本身只负责自动指派 reviewer；强制力来自受保护分支上的对应开关。"
+/>
+
+## 动手清单
+
+1. 在本站或你的练习仓库根目录建 `CODEOWNERS`，先只写一行 `* @你的用户名`。
+2. 开个测试 PR 改任意文件，看右侧 Reviewers 是否自动出现 owner。
+3. 给仓库开分支保护 + Require reviews from code owners，试着不批准直接 merge——体会被拒。
+4. 团队场景预演：把目录按「前端/后端/文档」分给不同人（哪怕都是你自己开的马甲号）。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于 CODEOWNERS](https://docs.github.com/zh/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
+
+<LessonComplete id="governance-codeowners" />

@@ -1,0 +1,70 @@
+---
+title: 分支保护：主干的第一道门
+description: 让 main 绿得有制度保证，而不是靠自觉
+---
+
+## 为什么 solo 开发者也需要它
+
+你前面已经会了 CI 和自动部署。但如果任何人（包括手滑的你）都能 `git push --force` 覆盖 main、或者顶着红 CI 直接 merge，那前面所有质量投资都白搭。**分支保护（branch protection）** 就是给分支上规则：不符合条件的合并，GitHub 直接拒绝按钮。
+
+路径：仓库 **Settings → Branches → Add branch protection rule**，对 `main` 生效。
+
+## 值得立刻开的五个开关
+
+| 规则 | 挡住的事故 |
+| --- | --- |
+| ☑ Require a pull request before merging | 直接 push 到 main 绕过 review |
+| ☑ Require status checks to pass | 顶着红 CI 合并（勾上你的 `test` job） |
+| ☑ Require branches to be up to date before merging | 合并后才发现在旧代码上测试过 |
+| ☑ Do not allow force pushes | `--force` 抹掉主干历史 |
+| ☑ Require linear history（可选） | 乱七八糟的 merge 提交交织 |
+
+<Callout type="info">
+**solo 起步配置**：前两条 + 禁 force push 就够——它挡的不是同事，是未来的自己和「手比脑子快」的瞬间。团队化后再加 review 人数要求。
+</Callout>
+
+## Required Reviewers 与 CODEOWNERS
+
+- **Require reviews from code owners**：涉及某人负责的文件，必须由他批准。
+- 搭配下一节课的 `CODEOWNERS` 文件使用，评审人自动被 @ 进来，不用满世界找人。
+
+## Branch Rulesets：新一代做法
+
+GitHub 正在用 **Rulesets**（Settings → Rules → Rulesets）取代老的 branch protection：规则可复用、可应用到多个分支/仓库、本地也能用 `git push --dry-run` 预检。新仓库建议直接从 Rulesets 开始；概念与上表一一对应。
+
+## 自测
+
+<Quiz
+  id="governance-branch-protection-q1"
+  question="开了 Require status checks to pass 并勾选 test 后，会发生什么？"
+  options={[
+    { label: "test 不绿的 PR 无法点 Merge", correct: true },
+    { label: "PR 会被自动关闭" },
+    { label: "push 会被服务器拒绝" },
+  ]}
+  explain="它作用于「合并」这一步：required check 未通过的 PR，Merge 按钮灰掉。push 到功能分支不受影响。"
+/>
+
+<Quiz
+  id="governance-branch-protection-q2"
+  question="「Require branches to be up to date before merging」解决什么问题？"
+  options={[
+    { label: "基于过时代码的测试不可信", correct: true },
+    { label: "分支名不够规范" },
+    { label: "PR 数量太多" },
+  ]}
+  explain="main 前进了而你的分支没同步，CI 测的其实不是合并后的真实代码；该规则强制先 rebase/merge 最新主干。"
+/>
+
+## 动手清单
+
+1. 打开你练手仓库的 Settings → Branches，给 `main` 建一条保护规则。
+2. 勾上 Require PR + Require status checks（选你 CI 的 job 名）。
+3. 亲手当一次坏人：本地直接向 main 强推、或建一个红 CI 的 PR 试着 merge，看 GitHub 怎么拒绝你。
+4. 如果这是团队仓库（或未来的），把「谁负责哪块」用下一课的 CODEOWNERS 固化下来。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于受保护的分支](https://docs.github.com/zh/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) · [Rulesets](https://docs.github.com/zh/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets)
+
+<LessonComplete id="governance-branch-protection" />

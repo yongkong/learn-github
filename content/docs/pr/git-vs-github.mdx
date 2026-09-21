@@ -1,0 +1,73 @@
+---
+title: Git vs GitHub：谁是谁
+description: 这门课的地基——分清哪些是 git、哪些是 GitHub 独有
+---
+
+## 一句话分清
+
+- **git** 是你电脑上的一个**版本管理工具**：记录改动、切分支、合并、撤销。离线也能用。
+- **GitHub** 是一个**网站/平台**：把 git 仓库放到云上，再往上叠一堆**协作与自动化能力**。
+
+GitHub 卖的不是 git，而是 git 之外的那一层。这层东西，你在本地 `git` 命令里**永远找不到**。
+
+## 归属对照表
+
+| 能力 | 属于 git | 属于 GitHub |
+| --- | :---: | :---: |
+| `commit` / `branch` / `merge` / `rebase` | ✅ | |
+| `push` / `pull` / `fetch`（传输动作） | ✅ | |
+| Issue / Label / Milestone | | ✅ |
+| Pull Request / Code Review | | ✅ |
+| Fork 与贡献模型 | | ✅ |
+| Actions / CI/CD | | ✅ |
+| Branch protection / required checks | | ✅ |
+| CODEOWNERS / Teams / Org 权限 | | ✅ |
+| Release / Packages / Pages | | ✅ |
+
+<Callout type="info">
+记忆法：**凡是要"打开浏览器在网页上点"的，几乎都属于 GitHub。** git 只管你本地那个 `.git` 目录里的历史。
+</Callout>
+
+## 那 PR 到底是不是 git？
+
+不是。git 里对应的是 `merge`（把两个分支合起来）。**Pull Request 是 GitHub 在 merge 之前，插入的"讨论 + 审查 + 检查"环节**。你可以拒绝一个 PR，但 git 本身没有"拒绝"这个概念。
+
+## 为什么这门课不教 git 命令
+
+因为命令是通用底座，到处都一样；而 **GitHub 的协作与自动化，才是"团队怎么一起把产品做出来"的核心**，也是你最陌生、最能立刻提升交付质量的部分。
+
+## 自测
+
+<Quiz
+  id="pr-gitvs-q1"
+  question="下列哪一项是 GitHub 独有、git 命令里没有的？"
+  options={[
+    { label: "Pull Request", correct: true },
+    { label: "Merge" },
+    { label: "Branch" },
+  ]}
+  explain="merge/branch 都是本地 git 概念；PR 是 GitHub 在合并前加的审查协作环节。"
+/>
+
+<Quiz
+  id="pr-gitvs-q2"
+  question="`git push` 这个动作本身属于？"
+  options={[
+    { label: "git（传输命令）", correct: true },
+    { label: "GitHub 平台功能" },
+    { label: "CI/CD 自动化步骤" },
+  ]}
+  explain="push 是 git 的传输命令，把本地提交推到远端；但「推到 GitHub 后自动触发 workflow」才是 GitHub 层。"
+/>
+
+## 动手清单
+
+1. 打开终端，运行 `git --version` 确认 git 是**本地工具**。
+2. 在浏览器打开你任意仓库的 GitHub 页面，找出 **Issues / Pull requests / Actions** 三个选项卡——它们都不在 git 里。
+3. 心里建立分层：**本地 git 管历史，GitHub 管协作与自动化。** 后面每一课都会落在这条线上。
+
+## 主要出处
+
+📖 [GitHub Docs · GitHub 术语表](https://docs.github.com/zh/get-started/learning-about-github/github-glossary) · [关于 GitHub 的产品](https://docs.github.com/zh/get-started/learning-about-github/githubs-products)
+
+<LessonComplete id="pr-git-vs-github" />

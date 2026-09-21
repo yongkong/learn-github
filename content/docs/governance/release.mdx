@@ -1,0 +1,70 @@
+---
+title: Release 与语义化版本
+description: 打 tag 不只是标记，是让世界能「购买」你的成果
+---
+
+## 提交 ≠ 发布
+
+merge 到 main 只是「代码进主干」；**Release 才是「用户能拿到的版本」**。GitHub 的 Release = 一个 git tag + 一份说明书 + 一堆产物文件。它是仓库对外的「货架」。
+
+## 语义化版本（SemVer）速成
+
+版本号 `主.次.补丁`（如 `2.3.1`）：
+
+| 位置 | 什么时候 +1 | 例子 |
+| --- | --- | --- |
+| 主版本 MAJOR | 破坏性变更，升级要改代码 | 接口删字段 |
+| 次版本 MINOR | 新功能，向后兼容 | 加新页面 |
+| 补丁 PATCH | 只修 bug | 修正拼写、崩溃 |
+
+团队沟通成本立刻下降：同事看到 `1.x → 2.0` 就知道要小心，看到 `+0.0.1` 直接升。打 tag：`git tag v1.2.0 && git push origin v1.2.0`。
+
+## 在 GitHub 上创建 Release
+
+仓库右侧 **Releases → Draft a new release** → 选/创建 tag → 填标题和说明。发布说明别手写流水账，用 **Auto generate release notes** ——GitHub 自动把 merged PR 按 label 归类成清单（这正是模块一 label 课程的回报）。
+
+<Callout type="info">
+Release 触发 CI/CD：上一模块学过 `on: release: types: [published]`——发布事件可以自动触发部署生产、发 npm 包、推 Docker 镜像。**Release 按钮就是你的「正式上架」开关。**
+</Callout>
+
+## 预发布与渠道
+
+- **Prerelease**（勾选即可）：标记 `v2.0.0-beta.1` 这类不成熟版本，不会被当成最新稳定版。
+- 节奏建议：日常 merge 进 main 自动部署 staging（预览环境）；攒一批功能后点一次 Release → 自动上 production。这就是「持续部署 + 有意发布」的组合。
+
+## 自测
+
+<Quiz
+  id="governance-release-q1"
+  question="按语义化版本，一个「修复 bug 且完全向后兼容」的改动应该升哪一位？"
+  options={[
+    { label: "PATCH（1.2.3 → 1.2.4）", correct: true },
+    { label: "MINOR（1.2.3 → 1.3.0）" },
+    { label: "MAJOR（1.2.3 → 2.0.0）" },
+  ]}
+  explain="只修 bug、不加功能、不破坏兼容 → 补丁号 +1。"
+/>
+
+<Quiz
+  id="governance-release-q2"
+  question="GitHub 自动生成的 Release Notes 是按什么把 PR 归类的？"
+  options={[
+    { label: "PR 的 labels", correct: true },
+    { label: "PR 作者" },
+    { label: "合并时间" },
+  ]}
+  explain="在 Release 的生成配置里可选按 label 分组（如 feature / bug / docs），所以仓库 label 体系要先行。"
+/>
+
+## 动手清单
+
+1. 给你的练手仓库打第一个 tag `v0.1.0`，在 GitHub 上 Draft a release。
+2. 点 **Auto generate release notes**，看它如何整理你的 merged PR。
+3. 加一个 `on: release: types: [published]` 的 workflow，打印版本号（`github.ref_name`），发布一次看它跑。
+4. 给自己的项目定一条版本纪律：破坏性 +主、新功能 +次、修 bug +补丁，写进 CONTRIBUTING。
+
+## 主要出处
+
+📖 [GitHub Docs · 管理仓库的发布版本](https://docs.github.com/zh/repositories/releasing-projects-on-github) · [自动生成的发布说明](https://docs.github.com/zh/repositories/releasing-projects-on-github/automatically-generated-release-notes)
+
+<LessonComplete id="governance-release" />

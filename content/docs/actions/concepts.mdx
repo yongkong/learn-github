@@ -1,0 +1,77 @@
+---
+title: Actions 五层概念模型
+description: Workflow / Event / Job / Step / Runner，一次讲透
+---
+
+## CI/CD 是什么，为什么你要它
+
+- **CI（持续集成）**：每次提交代码，机器自动帮你**构建 + 测试**，坏了立刻知道。
+- **CD（持续交付/部署）**：测试通过后，自动把产物**部署**出去。
+
+GitHub Actions 就是 GitHub 内置的 CI/CD 平台——**机器由 GitHub 提供，你只写一个 YAML 文件**，不用自己搭 Jenkins。
+
+<Callout type="info">
+对你的使命「一个人也能 ship 产品」来说，CI 是最重要的安全网：它 24 小时盯着「这次提交有没有把项目弄坏」，你才敢放心快速迭代。
+</Callout>
+
+## 五层模型（从大到小）
+
+| 层 | 英文 | 一句话 |
+| --- | --- | --- |
+| ① 工作流 | Workflow | 一个 YAML 文件 = 一条流水线，放在 `.github/workflows/` |
+| ② 触发器 | Event / `on:` | 什么时候跑（push、PR、定时、手动…） |
+| ③ 作业 | Job | 一组任务，跑在**一台** runner 上；多个 job 默认**并行** |
+| ④ 步骤 | Step | job 里一个个动作，**串行**；要么 `uses:` 要么 `run:` |
+| ⑤ 运行器 | Runner | 真正干活的机器，`ubuntu-latest` 是 GitHub 免费的临时虚拟机 |
+
+## 厨房类比
+
+> 工作流 = 一份**菜谱**；触发器 = **客人下单**；job = **一个灶台同时开火**；steps = 灶台上的**一道道工序**；runner = **租来的厨房**（GitHub 提供，用完打扫干净还回去）。
+
+## 执行顺序一图流
+
+```text
+push 事件
+  └─ Workflow (ci.yml) 启动
+       ├─ Job "test"   → runner#1 → step1 → step2 → step3 (串行)
+       └─ Job "lint"   → runner#2 → step1 → step2         (与 test 并行)
+```
+
+- 想让 job 有先后？用 `needs:`（下下节课细讲）。
+- 每个 `run` 步骤**退出码非 0 → 该 job 立刻变红**，后续步骤不跑。这就是 CI 的「判断逻辑」。
+
+## 自测
+
+<Quiz
+  id="actions-concepts-q1"
+  question="workflow 这个 YAML 文件必须放在哪个目录才被识别？"
+  options={[
+    { label: ".github/workflows/", correct: true },
+    { label: ".git/actions/ci/" },
+    { label: "workflows/.github/" },
+  ]}
+  explain="固定约定目录 .github/workflows/，文件名任意但扩展名需 .yml 或 .yaml。"
+/>
+
+<Quiz
+  id="actions-concepts-q2"
+  question="同一个 job 内的多个 steps 之间，默认如何执行？"
+  options={[
+    { label: "从上到下单行串行", correct: true },
+    { label: "全部并发一起跑" },
+    { label: "随机顺序不确定" },
+  ]}
+  explain="steps 在同一 runner 上串行；跨 job 才默认并行。"
+/>
+
+## 动手清单
+
+1. 心里默背五层：Workflow → Event → Job → Step → Runner。
+2. 记住类比：菜谱 / 下单 / 灶台 / 工序 / 厨房。
+3. 下节课我们就把这套模型变成一个真的能跑起来的 `ci.yml`。
+
+## 主要出处
+
+📖 [GitHub Docs · 了解 GitHub Actions](https://docs.github.com/zh/actions/get-started/understand-github-actions) · [工作流语法](https://docs.github.com/zh/actions/reference/workflows-and-actions/workflow-syntax)
+
+<LessonComplete id="actions-concepts" />

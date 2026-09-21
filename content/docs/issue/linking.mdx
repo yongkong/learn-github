@@ -1,0 +1,90 @@
+---
+title: Issue 与 PR 的联动
+description: 用一句 closes #N 让合并自动关 Issue
+---
+
+## 这条闭环为什么关键
+
+Issue 记录「要做什么」，PR 记录「怎么改的代码」。把它们连起来，你就得到一条完整审计链：*这个功能 → 这几行代码 → 已上线*。**这正是团队治理里 required checks 能自动运行的前提。**
+
+## 关闭关键字（Closing keywords）
+
+在 **PR 描述里**（不是评论里）写：
+
+```text
+closes #12
+fixes #12
+resolves #12
+```
+
+同义词还有 `close` / `fix` / `resolve`。作用：
+
+- 该 PR **合入默认分支**后，Issue #12 **自动关闭**。
+- Issue 页面会出现一行：*"X 合并了 #12 到 main，1 天前 · 关闭此 #12"*。
+- PR 右侧栏 **Development** 区域显示关联的 Issue。
+
+<Callout type="warn">
+关键字必须写在 **PR 描述**里，写在评论或 commit 信息里**不会**触发自动关闭；而且必须等 PR **合并**，仅 push 不会关。
+</Callout>
+
+## 跨仓库引用
+
+引用别的工作区的 Issue/PR 要写全：
+
+```text
+yongkong/other-repo#34
+```
+
+只写 `#34` 指的是**当前仓库**的 34 号。
+
+## 只是提一下（不联动）
+
+在评论或描述里写 `#12`、或 `cc @user`，会产生**交叉引用**（Issue 的时间线里能看到），但**不会**自动关闭——适合「顺便关联讨论」。
+
+## 完整链路示意
+
+```
+Issue #12 (要做登录)
+   │  开发基于新分支 feat/login
+   ▼
+PR #13  描述含 "closes #12"
+   │  CI 绿 + review 通过 → Merge
+   ▼
+Issue #12 自动关闭 ✅
+```
+
+## 自测
+
+<Quiz
+  id="issue-linking-q1"
+  question="`closes #12` 写在哪个位置才能在合并时自动关 Issue？"
+  options={[
+    { label: "PR 的描述里", correct: true },
+    { label: "任意一条评论里" },
+    { label: "分支的名称里" },
+  ]}
+  explain="关闭关键字必须出现在 PR 描述（或首次 commit 信息）中；评论里的只产生交叉引用。"
+/>
+
+<Quiz
+  id="issue-linking-q2"
+  question="PR 合并前，被关联的 Issue 会怎样？"
+  options={[
+    { label: "合并后才自动关闭", correct: true },
+    { label: "一 push 就自动关闭" },
+    { label: "开 PR 时就立刻关闭" },
+  ]}
+  explain="只有当 PR 合入默认分支，关联 Issue 才被自动关闭，push 或开 PR 阶段都不会。"
+/>
+
+## 动手清单
+
+1. 给仓库提一个 Issue，记下编号（比如 #2）。
+2. 之后学完 PR 模块时，在 PR 描述里写 `closes #2`。
+3. 现在先手工体验：在 Issue 评论里输入 `#1`，看自动补全与交叉引用效果。
+
+## 主要出处
+
+📖 [GitHub Docs · 关闭 Issue 与 PR 的关键词](https://docs.github.com/zh/issues/tracking-your-work-with-issues) · [将问题关联到拉取请求](https://docs.github.com/zh/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
+
+<LessonComplete id="issue-linking" />

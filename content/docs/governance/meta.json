@@ -1,0 +1,10 @@
+{
+  "title": "模块四 · 团队治理与 Release",
+  "pages": [
+    "branch-protection",
+    "codeowners",
+    "organizations",
+    "release",
+    "contributing"
+  ]
+}

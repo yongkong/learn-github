@@ -1,0 +1,80 @@
+---
+title: Issue 是什么，能干什么
+description: 为什么它是 GitHub 的灵魂，而不是 git 的一部分
+---
+
+## 一句话认识 Issue
+
+**Issue = 挂在仓库上的一个「话题卡片」**。它可以是 bug 报告、任务、需求讨论、发布公告。它属于 GitHub 平台，不属于 git —— 你 `git` 命令行里找不到它，它只活在 GitHub 网站上（以及通过 API）。
+
+<Callout type="info">
+**为什么先学 Issue？** 无论个人项目还是团队协作，第一件事都是把「要做的事」写下来。Issue 是 GitHub 上最基础的记录单元：PR、milestone、label、CODEOWNERS、自动化——全都挂在它身上。
+</Callout>
+
+## Issue 能承担哪些角色
+
+| 场景 | 谁创建 | 典型内容 |
+| --- | --- | --- |
+| Bug 报告 | 用户 / QA | 复现步骤、期望/实际、日志 |
+| 需求 / enhancement | PM / 开发者 | 用户故事、验收条件 |
+| 任务拆解 | 开发者自己 | 「加登录」「修 xss」 |
+| 讨论 / RFC | 任何人 | 收集方案，达成一致 |
+| 公开待办 (`good first issue`) | 维护者 | 邀请外部贡献 |
+
+**同一个 Issue 可以扮演这五种角色中的任意一种**——靠 label / 模板 / milestone 区分（后面几课会讲）。
+
+## Issue 的生命周期
+
+```
+Open  ─▶  In Progress（关联 PR）  ─▶  Closed（合并 PR / 手动关闭）
+                 ▲                            │
+                 └────  Reopen  ◀─────────────┘
+```
+
+关键机制：
+- Issue 编号从 1 开始，**在同一个仓库内唯一**，永不复用。链接形如 `owner/repo#123`。
+- 关闭 Issue 会通知所有 @-提到过的人；被 PR 关闭时，PR 里会显示「Closed」徽章。
+- Issue 可以「锁定」以停止评论（用于公告）。
+
+## Issue 不是什么
+
+- ❌ 不是 git 分支 —— 它和 commit 无关，只是元数据。
+- ❌ 不是工单系统 —— 没有强制责任人，不指派也能开。
+- ❌ 不是 wiki —— 它是一次性话题，讨论完就归档；文档型内容用 wiki 或仓库里的 md。
+
+## 自测
+
+<Quiz
+  id="issue-what-q1"
+  question="Issue 编号在什么范围内唯一？"
+  options={[
+    { label: "在同一个仓库内唯一", correct: true },
+    { label: "在同一账户下唯一" },
+    { label: "在整个 GitHub 唯一" },
+  ]}
+  explain="每个仓库 Issue 编号从 1 起，跨仓库不保证唯一，所以链接写作 owner/repo#N。"
+/>
+
+<Quiz
+  id="issue-what-q2"
+  question="下列哪一项通常不该用 Issue 承载？"
+  options={[
+    { label: "长期维护的架构文档", correct: true },
+    { label: "一次具体的 bug 报告" },
+    { label: "一个可以拆解的任务" },
+  ]}
+  explain="Issue 是一次性话题，讨论完就 closed。长期文档更适合 README / wiki / docs 目录。"
+/>
+
+## 动手清单
+
+1. 打开你的一个 GitHub 仓库 → **Issues** 选项卡 → **New issue**。
+2. 起标题为「我的第一个 Issue」，正文随便写两行，点 **Submit new issue**。
+3. 观察 URL：`https://github.com/<user>/<repo>/issues/1`。数字 `1` 就是它的编号。
+4. 关掉它：底部 **Close issue**。再 **Reopen**。感受状态变化。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于 Issue](https://docs.github.com/zh/issues)
+
+<LessonComplete id="issue-what-is-issue" />

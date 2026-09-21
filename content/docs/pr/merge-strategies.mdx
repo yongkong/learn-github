@@ -1,0 +1,75 @@
+---
+title: 合并三式
+description: Merge commit vs Squash vs Rebase，到底选哪个
+---
+
+## 三种合并方式的差别
+
+合并 PR 时，GitHub 让你选把 head 分支的提交**以什么形态**进主干。核心区别是「main 历史长什么样」。
+
+假设你的功能分支上有 3 个 commit：`A - B - C`。
+
+| 方式 | main 上的结果 | 适用 |
+| --- | --- | --- |
+| **Create a merge commit** | 保留 A/B/C + 一个合并点，分支形状可见 | 想保留完整开发史 |
+| **Squash and merge** | A/B/C 压成**1 个** commit 进 main | 功能分支碎提交多，想要干净线性史（**最常用**） |
+| **Rebase and merge** | A/B/C 逐个平移到 main 顶端，无合并点 | 想要线性史又保留每个提交 |
+
+## 各自历史形状
+
+```text
+merge commit:   main ──●───●── (把 feat 的 A B C 汇进来，多一个 merge 节点)
+squash:         main ──●────●   (A B C → 1 个提交，最整洁)
+rebase:         main ──●──A─B─C (逐条搬过来，线性)
+```
+
+## 怎么选（经验法则）
+
+- **个人 / 小团队默认选 Squash**：一个功能 = 一个提交，`git log` 清爽，回滚简单。
+- 团队重视「每个原子提交」且作者会整理历史 → **Rebase**。
+- 需要保留分支拓扑（如长期并行大特性、发布分支回主线）→ **Merge commit**。
+
+<Callout type="warn">
+Squash 会**丢弃**分支上的原始提交信息，只留你现场写的一条。所以合并时那句 commit message **要认真写**——它就是这条功能在 main 里的唯一记录。
+</Callout>
+
+## 让全仓库统一
+
+在仓库 **Settings → General → Pull Requests** 里，可以只勾选允许某一种方式，或设默认。团队治理阶段（模块 4）会用分支保护强制统一。
+
+## 自测
+
+<Quiz
+  id="pr-merge-q1"
+  question="Squash and merge 对分支上的多个提交做了什么？"
+  options={[
+    { label: "压成一个提交进主干", correct: true },
+    { label: "保留全部原始提交记录" },
+    { label: "逐条平移且保留各自" },
+  ]}
+  explain="squash 把 A/B/C 合成 1 个提交，历史最干净；代价是丢失分支原始粒度。"
+/>
+
+<Quiz
+  id="pr-merge-q2"
+  question="想要「线性历史 + 保留每个提交」，应选？"
+  options={[
+    { label: "Rebase and merge", correct: true },
+    { label: "Squash and merge" },
+    { label: "Create merge commit" },
+  ]}
+  explain="rebase 把每个提交平移到主干顶端且无合并节点；squash 会合并成一个，merge commit 有分叉。"
+/>
+
+## 动手清单
+
+1. 回到你的练习 PR，看绿色 **Merge pull request** 按钮旁的下拉箭头，展开三种方式。
+2. 选 **Squash and merge**，把合并信息改成一句清晰的中文（如「feat: 新增登录页」）后合并。
+3. 合并后到 **Code → Commits** 看 main 历史，确认它变成了一个提交。
+4. 记住你用的方式——下节课冲突、以及模块 4 的分支保护都建立在这个选择上。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于合并拉取请求](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/incorporating-changes-in-a-pull-request/about-merge-methods-and-github)
+
+<LessonComplete id="pr-merge-strategies" />

@@ -1,0 +1,83 @@
+---
+title: Code Review 全流程
+description: comment / suggestion / approve / request changes
+---
+
+## Review 的心智模型
+
+Review 不是「找茬」，是**在代码进入主干前，用第二双眼睛拦住错误、传播知识、统一风格**。GitHub 把它做进了 PR 页面，让讨论和代码 diff 长在一起。
+
+## 在 Files changed 上留言
+
+打开 PR → **Files changed**，把鼠标移到任意一行代码上，点 **`+`**：可以只评某一行，也能拖选一个范围。
+
+| 评论类型 | 含义 | 会阻塞合并吗 |
+| --- | --- | --- |
+| **Comment** | 普通留言、提问、建议 | 否 |
+| **Suggestion** | 直接给出替换代码，作者可一键采纳 | 否（但很省事） |
+| **Start a review** | 攒多条一起提交，避免刷屏 | 否 |
+
+## 提交一次正式 Review
+
+写完后点 **Review changes**，选三种结论之一：
+
+- **Comment** —— 只留言，不下结论。
+- **Approve** —— 同意合并（计入批准数）。
+- **Request changes** —— 明确要求修改，**在解决前会阻止合并**（若开了相应保护规则）。
+
+## 建议（Suggestion）长这样
+
+在评论里用代码块包一层，GitHub 会渲染成「可一键 Apply suggestion」：
+
+````text
+```suggestion
+const total = items.reduce((a, b) => a + b.price, 0);
+```
+````
+
+作者点 **Commit suggestion**，改动就直接进了 PR，无需本地来回。
+
+## 讨论闭环：Resolve conversation
+
+每条 review thread 讨论完，点 **Resolve conversation**。全部 resolve 是许多团队的合并前置条件。被 @ 的人会收到通知。
+
+<Callout type="info">
+**给 AI/队友 review 时的礼貌顺序**：先说「为什么」，再说「怎么改」；能提 suggestion 就别只说「这里不对」。对事不对人，问题分级（阻塞 vs 可选）。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="pr-review-q1"
+  question="哪种 review 结论在问题解决前会阻止合并？"
+  options={[
+    { label: "Request changes", correct: true },
+    { label: "普通 Comment" },
+    { label: "Approve" },
+  ]}
+  explain="Request changes 表达「必须改」，配合分支保护可在解决前挡住合并。"
+/>
+
+<Quiz
+  id="pr-review-q2"
+  question="用 ```suggestion 代码块提出改动的最大好处是？"
+  options={[
+    { label: "作者可一键采纳改动", correct: true },
+    { label: "会自动跑 CI 测试" },
+    { label: "会自动关闭相关 Issue" },
+  ]}
+  explain="Suggestion 能被作者一键 Apply 直接提交进 PR，省去本地手改。"
+/>
+
+## 动手清单
+
+1. 用上节课开的那个 PR：在 **Files changed** 找一行，加一条 Comment。
+2. 再点 **Review changes**，选 **Comment** 提交，看它出现在 Conversation 时间线。
+3. 把这条 discussion 用 **Resolve conversation** 关掉。
+4. （进阶）开一个 suggestion 块，自己在另一个 PR 里点 Apply 体验一键采纳。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于 PR 的 review](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests) · [评审建议](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/commenting-on-a-pull-request)
+
+<LessonComplete id="pr-code-review" />

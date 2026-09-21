@@ -1,0 +1,85 @@
+---
+title: Fork 与开源贡献模型
+description: 如何给一个你没有写权限的仓库提 PR
+---
+
+## 为什么需要 Fork
+
+给别人的开源项目提改动时，你**没有直接 push 分支的权限**。GitHub 的解法：把整个仓库**复制一份到你自己的账户**（这就叫 fork），在你这份上随便改，再请求合并回原仓库。
+
+## 四方关系
+
+```
+上游 upstream:  original-owner/repo   ←── 你想贡献的目标
+        ▲
+        │  Pull Request（跨仓库）
+        │
+你的 fork:      yongkong/repo          ←── 你有全部权限的副本
+```
+
+- 你 clone 的是**自己的 fork**。
+- 原仓库在 GitHub 术语里叫 **upstream（上游）**，你的叫 **fork（派生）**。
+
+## 贡献五步
+
+1. 目标仓库页点右上角 **Fork** → 得到 `yongkong/repo`。
+2. clone 你的 fork，本地改代码、commit。
+3. push 回你的 fork 的一个新分支。
+4. GitHub 会提示 **Contribute → Open pull request**（注意：PR 从你的 fork → 上游）。
+5. 上游维护者 review、要求修改或合并。
+
+## 保持与上游同步（最坑的一步）
+
+你 fork 之后，上游一直在变。长期不同步，你的 PR 会越来越难合。做法：给你的本地仓库加一个指向 upstream 的 remote，定期把上游 main 拉进来。
+
+```bash
+# 一次性：添加上游
+git remote add upstream https://github.com/original-owner/repo.git
+
+# 每次开工前：把上游最新拉下来
+git fetch upstream
+git switch main
+git merge upstream/main   # 或 git rebase upstream/main
+git push                  # 更新你自己的 fork
+```
+
+<Callout type="warn">
+GitHub 网页上 fork 若落后上游，会显示 **"This branch is behind ..."** 和一个 **Sync fork** 按钮——轻量同步可用它，但复杂项目建议用上面的命令行方式掌控。
+</Callout>
+
+## 自测
+
+<Quiz
+  id="pr-fork-q1"
+  question="你给一个没有写权限的开源仓库提 PR，正确起点是？"
+  options={[
+    { label: "先 Fork 到自己的账户", correct: true },
+    { label: "直接 clone 上游并 push" },
+    { label: "在 Issue 里贴出补丁代码" },
+  ]}
+  explain="没写权限就不能 push 上游；先 fork 得到自己的副本，再跨仓库提 PR。"
+/>
+
+<Quiz
+  id="pr-fork-q2"
+  question="在 fork 模型里，「upstream（上游）」指的是？"
+  options={[
+    { label: "你贡献的原始仓库", correct: true },
+    { label: "你自己的 fork 副本" },
+    { label: "GitHub 官方示例仓库" },
+  ]}
+  explain="upstream 是被 fork 的原始仓库；你的副本叫 fork，PR 从 fork 指向 upstream。"
+/>
+
+## 动手清单
+
+1. 找一个小而友好的开源仓库（有 `good first issue` 标签的），点 **Fork**。
+2. clone 你的 fork，加一个 upstream remote（照上面命令）。
+3. 不改代码，只跑一次 `git fetch upstream` + `git merge upstream/main`，练习同步。
+4. 挑一个 `good first issue`，将来学完 PR/review 后回来真正提一个 PR。
+
+## 主要出处
+
+📖 [GitHub Docs · 关于 fork](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/working-with-forks) · [同步 fork](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
+
+<LessonComplete id="pr-fork-model" />

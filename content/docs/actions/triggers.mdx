@@ -1,0 +1,94 @@
+---
+title: 触发器全家桶
+description: "on: 不只是 push——定时、手动、发布、联动"
+---
+
+## 触发器决定「何时跑」
+
+`on:` 字段列出所有会让 workflow 启动的事件。选错触发器，要么 CI 空转烧配额，要么关键动作没人做。
+
+## 常用事件对照
+
+| 事件 | 何时触发 | 典型用途 |
+| --- | --- | --- |
+| `push` | 分支/标签被推送 | CI 跑测试 |
+| `pull_request` | PR 开启/更新/ready | 合并前检查（团队主力） |
+| `workflow_dispatch` | Actions 页手动点按钮 | 部署、维护任务 |
+| `schedule` | cron 定时（仅默认分支生效） | nightly 全量测试 |
+| `release` (`types: [published]`) | 发布 Release 时 | 版本部署 / 发包 |
+| `push` + `tags` | 打 tag 时 | 触发发布 |
+| `issue_comment` / `issues` | Issue 被评论/创建 | 机器人自动响应 |
+
+## 过滤：别让它瞎跑
+
+裸 `push:` 会因**任何分支任何文件**变化而触发。用 `branches` / `paths` 收窄：
+
+```yaml
+on:
+  push:
+    branches: [main]          # 只有推 main 才跑
+    paths: ["src/**", "package.json"]   # 只有这些文件变了才跑
+  pull_request:
+    branches: [main]          # PR 目标为 main 时跑
+```
+
+## 定时（cron）
+
+```yaml
+on:
+  schedule:
+    - cron: "0 3 * * *"       # 每天 UTC 3:00
+```
+
+cron 是 5 段：`分 时 日 月 周`。**schedule 只在仓库默认分支上定义才生效**。
+
+## 手动按钮（workflow_dispatch）
+
+```yaml
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 部署到哪个环境
+        type: choice
+        options: [staging, production]
+```
+
+在 Actions 页出现 **Run workflow** 按钮，可传参。**部署类、一次性任务**首选它——安全、可控。
+
+## 自测
+
+<Quiz
+  id="actions-triggers-q1"
+  question="定时 schedule 触发器在哪个分支上的定义才会生效？"
+  options={[
+    { label: "仓库的默认分支", correct: true },
+    { label: "任意一个功能分支" },
+    { label: "最新提交的分支" },
+  ]}
+  explain="GitHub 只按默认分支上的 workflow 文件来跑定时计划，其它分支里写的 schedule 被忽略。"
+/>
+
+<Quiz
+  id="actions-triggers-q2"
+  question="想让部署工作流由人手动点按钮带参数触发，用哪个事件？"
+  options={[
+    { label: "workflow_dispatch", correct: true },
+    { label: "schedule" },
+    { label: "push" },
+  ]}
+  explain="workflow_dispatch 在 Actions 页渲染 Run workflow 按钮，支持 inputs 传参。"
+/>
+
+## 动手清单
+
+1. 给上节课的 `ci.yml` 的 `push:` 加上 `branches: [main]`，减少无谓运行。
+2. 复制一个新文件 `manual.yml`，只写 `on: workflow_dispatch`，加一个 choice 输入。
+3. 去 Actions 页找到它，点 **Run workflow**，选个参数手动跑一次。
+4. 把 workflow 默认只跑相关分支/路径的习惯建立起来——省配额也省噪音。
+
+## 主要出处
+
+📖 [GitHub Docs · 触发工作流的事件](https://docs.github.com/zh/actions/reference/workflows-and-actions/events-that-trigger-workflows) · [workflow_dispatch](https://docs.github.com/zh/actions/how-tos/write-workflows/choose-what-workflows-do/run-workflows-on-demand)
+
+<LessonComplete id="actions-triggers" />
