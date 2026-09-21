@@ -2,7 +2,7 @@
 
 > 一个人也能 ship 产品——从 Issue 到 Release 的完整工作流课程站。
 
-🔗 在线站点：https://learn-github.vercel.app （部署后生效）
+🔗 在线站点：https://github-learn-omega.vercel.app
 
 这不是一门 git 教程。git 命令哪里都能学，本站聚焦 **GitHub 特有的协作与工程能力**：Issue 体系、Pull Request 与 Code Review、Actions 与 CI/CD、团队治理与 Release。面向零基础到进阶的个人开发者与 2–10 人小团队。
 

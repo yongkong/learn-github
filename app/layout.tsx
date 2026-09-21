@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     default: 'Learn GitHub · GitHub 协作与 CI/CD 学习网站',
   },
   description: '面向个人开发与团队协作的 GitHub 特有能力学习站：Issue、Pull Request、Actions、团队治理。',
-  metadataBase: new URL('https://learn-github.vercel.app'),
+  metadataBase: new URL('https://github-learn-omega.vercel.app'),
 };
 
 export default function Layout({ children }: LayoutProps<'/'>) {
